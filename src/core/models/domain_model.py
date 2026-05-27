@@ -20,7 +20,7 @@ class AnimeDataModel:
     country_of_origin: str
     source: str | None
     hashtag: str | None
-    updated_at: int
+    updated_at: str
     genres: str | None
     synonyms: list[str]
     average_score: int | None
