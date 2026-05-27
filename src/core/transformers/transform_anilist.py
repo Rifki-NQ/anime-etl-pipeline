@@ -43,8 +43,8 @@ class AnilistTransformer:
             source=raw_data.source,
             hashtag=raw_data.hashtag,
             updated_at=self._transform_from_timestamp(raw_data.updatedAt),
-            genres=self._transform_genres(raw_data.genres),
-            synonyms=raw_data.synonyms,
+            genres=self._join_list(raw_data.genres),
+            synonyms=self._join_list(raw_data.synonyms),
             average_score=raw_data.averageScore,
             mean_score=raw_data.meanScore,
             popularity=raw_data.popularity,
@@ -69,10 +69,10 @@ class AnilistTransformer:
             return f"{value:02d}" if value is not None else "00"
         return f"{resolve_none(year)}-{resolve_none(month)}-{resolve_none(day)}"
     
-    def _transform_genres(self, genres: list[str]) -> str | None:
-        if not genres:
+    def _join_list(self, values: list[str]) -> str | None:
+        if not values:
             return None
-        return ",".join(genres)
+        return ",".join(values)
     
     def _transform_studios(
         self, studio_nodes: list[AnilistStudiosNodes]

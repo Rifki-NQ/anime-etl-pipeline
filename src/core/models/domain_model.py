@@ -22,7 +22,7 @@ class AnimeDataModel:
     hashtag: str | None
     updated_at: str
     genres: str | None
-    synonyms: list[str]
+    synonyms: str | None
     average_score: int | None
     mean_score: int | None
     popularity: int
