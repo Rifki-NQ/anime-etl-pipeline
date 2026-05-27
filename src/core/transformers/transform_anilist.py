@@ -4,24 +4,29 @@ from src.core.models.domain_model import AnimeDataModel
 from src.core.models.raw_anilist_model import RawAnilistData, AnilistStudiosNodes
 from src.core.models.protocols import ExtractorProtocol
 
+
 class AnilistTransformer:
     def __init__(self, extractor: ExtractorProtocol) -> None:
         self.extractor = extractor
-        
-    async def get_transformed_data(self, start_year: int, end_year: int) -> AsyncIterable[AnimeDataModel]:
+
+    async def get_transformed_data(
+        self, start_year: int, end_year: int
+    ) -> AsyncIterable[AnimeDataModel]:
         years = self._get_year_range(start_year, end_year)
         async for raw_data in self._get_raw_data(years):
             yield self._transform_data(raw_data)
-        
+
     async def _get_raw_data(self, years: list[int]) -> AsyncIterable[RawAnilistData]:
         for year in years:
-            for i in range(1, 100): # hardcoded max page, since anilist pagination caps at 100
+            for i in range(
+                1, 100
+            ):  # hardcoded max page, since anilist pagination caps at 100
                 pages = await self.extractor.get_by_page(i, year)
                 if not pages:
                     break
                 for page in pages:
                     yield page
-    
+
     def _transform_data(self, raw_data: RawAnilistData) -> AnimeDataModel:
         return AnimeDataModel(
             id=raw_data.id,
@@ -50,13 +55,13 @@ class AnilistTransformer:
             popularity=raw_data.popularity,
             trending=raw_data.trending,
             favourites=raw_data.favourites,
-            animation_studio=self._transform_studios(raw_data.studios.nodes)
+            animation_studio=self._transform_studios(raw_data.studios.nodes),
         )
-        
+
     def _transform_from_timestamp(self, timestamp: int) -> str:
         dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
         return dt.strftime("%Y-%m-%d")
-    
+
     def _transform_date(
         self,
         year: int | None,
@@ -65,23 +70,23 @@ class AnilistTransformer:
     ) -> str | None:
         if year is None and month is None and day is None:
             return None
+
         def resolve_none(value: int | None) -> str:
             return f"{value:02d}" if value is not None else "00"
+
         return f"{resolve_none(year)}-{resolve_none(month)}-{resolve_none(day)}"
-    
+
     def _join_list(self, values: list[str]) -> str | None:
         if not values:
             return None
         return ",".join(values)
-    
-    def _transform_studios(
-        self, studio_nodes: list[AnilistStudiosNodes]
-    ) -> str | None:
+
+    def _transform_studios(self, studio_nodes: list[AnilistStudiosNodes]) -> str | None:
         for node in studio_nodes:
             if node.isAnimationStudio:
                 return node.name
         return None
-    
+
     def _get_year_range(self, start: int, end: int) -> list[int]:
         years: list[int] = []
         while start <= end:

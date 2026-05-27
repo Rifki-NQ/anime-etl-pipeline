@@ -23,12 +23,11 @@ async def all_data(transformer: AnilistTransformer) -> list[AnimeDataModel]:
         all_data.append(data)
     return all_data
 
-def test_transformed_data_model(
-    all_data: list[AnimeDataModel]
-) -> None:
+
+def test_transformed_data_model(all_data: list[AnimeDataModel]) -> None:
     for data in all_data:
         assert isinstance(data, AnimeDataModel)
-        
+
 
 def test_transformed_first_data_value(all_data: list[AnimeDataModel]) -> None:
     data = all_data[0]
