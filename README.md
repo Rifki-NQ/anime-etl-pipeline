@@ -16,7 +16,7 @@ Used to make http request to the api, httpx is used in the extract layer that wi
 
 #### [pydantic](https://pydantic.dev/docs/validation/)
 
-Used as api data validator that lives in extract layer before sending the data to the tranform layer.
+Used as api data validator that lives in extract layer before sending the data to the transform layer.
 
 ---
 
@@ -24,7 +24,7 @@ Used as api data validator that lives in extract layer before sending the data t
 
 #### dataclass
 
-Used as the core data model for the anime data, it will lives in the tranform layer as the domain model for the upper layers.
+Used as the core data model for the anime data, it will lives in the transform layer as the domain model for the upper layers.
 
 #### sqlite3
 
