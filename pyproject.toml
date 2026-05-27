@@ -20,12 +20,12 @@ dev = [
 ]
 
 [project.scripts]
-anime-etl-pipeline = "src.main:main"
+anime = "src.main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
 
-[tool.pytest.ini_option]
+[tool.pytest.ini_options]
 asyncio_mode = "auto"
 
 [tool.mypy]
