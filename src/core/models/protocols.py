@@ -1,5 +1,5 @@
 from typing import Protocol
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterable
 from src.core.models.raw_anilist_model import RawAnilistData
 from src.core.models.domain_model import AnimeDataModel
 
@@ -11,4 +11,4 @@ class ExtractorProtocol(Protocol):
 class TransformerProtocol(Protocol):
     def get_transformed_data(
         self, start_year: int, end_year: int
-    ) -> AsyncIterator[AnimeDataModel]: ...
+    ) -> AsyncIterable[AnimeDataModel]: ...

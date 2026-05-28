@@ -8,6 +8,7 @@ class LoadToSQLite:
     MODEL_FIELDS = [f.name for f in fields(AnimeDataModel)]
     COLUMNS = ", ".join(MODEL_FIELDS)
     PLACEHOLDER = ", ".join("?" * len(MODEL_FIELDS))
+    BATCH_SIZE = 100
 
     def __init__(self, transformer: TransformerProtocol) -> None:
         self.transformer = transformer
@@ -16,10 +17,16 @@ class LoadToSQLite:
         with sqlite3.connect("database/data.db") as conn:
             cur = conn.cursor()
             self._ensure_table_exists(cur)
+            current_entry = 0
             async for data in self.transformer.get_transformed_data(
                 start_year, end_year
             ):
                 self._insert_data(cur, data)
+                current_entry += 1
+                if current_entry == self.BATCH_SIZE:
+                    conn.commit()
+                    current_entry = 0
+            conn.commit()
 
     def _insert_data(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
         cursor.execute(
@@ -33,8 +40,7 @@ class LoadToSQLite:
     def _ensure_table_exists(self, cursor: sqlite3.Cursor) -> None:
         cursor.execute("""
                        CREATE TABLE IF NOT EXISTS anime (
-                           id INTEGER PRIMARY KEY AUTOINCREMENT,
-                           id_anilist INTEGER,
+                           id INTEGER PRIMARY KEY,
                            id_mal INTEGER,
                            romaji_title TEXT NOT NULL,
                            english_title TEXT,
