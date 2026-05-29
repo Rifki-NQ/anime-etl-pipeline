@@ -1,5 +1,6 @@
 import httpx
 import asyncio
+import logging
 from configs import GLOBAL_TIMEOUT, GLOBAL_RATE_LIMIT
 from src.core.extractors.anilist_query import QUERY_BY_PAGE
 from src.core.models.raw_anilist_model import RawAnilistData
@@ -7,6 +8,8 @@ from src.core.exceptions import InvalidYearError
 
 # anilist has limit of when page num is over 100, it will fails
 # extract method: per year
+
+logger = logging.getLogger(__name__)
 
 
 class AnilistExtractor:
@@ -20,7 +23,7 @@ class AnilistExtractor:
             {"page": page, "start": int(f"{year:<08d}"), "end": int(f"{year}1231")},
         )
         media_data = data.json()["data"]["Page"]["media"]
-        print(f"page {page}, year {year}")
+        logger.info(f"Extracted: page {page}, year {year}")
         return [RawAnilistData(**r) for r in media_data]
 
     async def _request(self, query: str, variables: dict[str, int]) -> httpx.Response:

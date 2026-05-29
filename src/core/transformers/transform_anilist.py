@@ -1,8 +1,11 @@
+import logging
 from datetime import datetime, timezone
 from collections.abc import AsyncIterable
 from src.core.models.domain_model import AnimeDataModel
 from src.core.models.raw_anilist_model import RawAnilistData, AnilistStudiosNodes
 from src.core.models.protocols import ExtractorProtocol
+
+logger = logging.getLogger(__name__)
 
 
 class AnilistTransformer:
@@ -14,6 +17,7 @@ class AnilistTransformer:
     ) -> AsyncIterable[AnimeDataModel]:
         years = self._get_year_range(start_year, end_year)
         async for raw_data in self._get_raw_data(years):
+            logger.debug(f"Transforming: id {raw_data.id}")
             yield self._transform_data(raw_data)
 
     async def _get_raw_data(self, years: list[int]) -> AsyncIterable[RawAnilistData]:
@@ -26,6 +30,7 @@ class AnilistTransformer:
                     break
                 for page in pages:
                     yield page
+            logger.info(f"Transformed: year {year}")
 
     def _transform_data(self, raw_data: RawAnilistData) -> AnimeDataModel:
         return AnimeDataModel(

@@ -1,8 +1,11 @@
 import sqlite3
+import logging
 from configs import SQL_BATCH_COMMIT
 from dataclasses import fields, asdict
 from src.core.models.domain_model import AnimeDataModel
 from src.core.models.protocols import TransformerProtocol
+
+logger = logging.getLogger(__name__)
 
 
 class LoadToSQLite:
@@ -18,6 +21,7 @@ class LoadToSQLite:
             cur = conn.cursor()
             self._ensure_table_exists(cur)
             current_entry = 0
+            batch_commit_num = 0
             async for data in self.transformer.get_transformed_data(
                 start_year, end_year
             ):
@@ -25,9 +29,12 @@ class LoadToSQLite:
                 current_entry += 1
                 if current_entry == SQL_BATCH_COMMIT:
                     conn.commit()
+                    logger.info(f"Loaded: batch commit {batch_commit_num}")
                     current_entry = 0
+                    batch_commit_num += 1
 
     def _insert_data(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
+        logger.debug(f"Loading: id {data.id}")
         cursor.execute(
             f"""
             INSERT INTO anime ({self.COLUMNS})
