@@ -1,4 +1,5 @@
 import sqlite3
+from configs import SQL_BATCH_COMMIT
 from dataclasses import fields, asdict
 from src.core.models.domain_model import AnimeDataModel
 from src.core.models.protocols import TransformerProtocol
@@ -8,7 +9,6 @@ class LoadToSQLite:
     MODEL_FIELDS = [f.name for f in fields(AnimeDataModel)]
     COLUMNS = ", ".join(MODEL_FIELDS)
     PLACEHOLDER = ", ".join("?" * len(MODEL_FIELDS))
-    BATCH_SIZE = 100
 
     def __init__(self, transformer: TransformerProtocol) -> None:
         self.transformer = transformer
@@ -23,10 +23,9 @@ class LoadToSQLite:
             ):
                 self._insert_data(cur, data)
                 current_entry += 1
-                if current_entry == self.BATCH_SIZE:
+                if current_entry == SQL_BATCH_COMMIT:
                     conn.commit()
                     current_entry = 0
-            conn.commit()
 
     def _insert_data(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
         cursor.execute(

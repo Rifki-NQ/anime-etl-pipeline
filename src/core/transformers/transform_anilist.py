@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime, timezone
 from collections.abc import AsyncIterable
 from src.core.models.domain_model import AnimeDataModel
@@ -23,7 +22,6 @@ class AnilistTransformer:
                 1, 100
             ):  # hardcoded max page, since anilist pagination caps at 100
                 pages = await self.extractor.get_by_page(i, year)
-                await asyncio.sleep(2.5)
                 if not pages:
                     break
                 for page in pages:

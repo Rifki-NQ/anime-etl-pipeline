@@ -1,4 +1,6 @@
 import httpx
+import asyncio
+from configs import GLOBAL_TIMEOUT, GLOBAL_RATE_LIMIT
 from src.core.extractors.anilist_query import QUERY_BY_PAGE
 from src.core.models.raw_anilist_model import RawAnilistData
 from src.core.exceptions import InvalidYearError
@@ -18,6 +20,7 @@ class AnilistExtractor:
             {"page": page, "start": int(f"{year:<08d}"), "end": int(f"{year}1231")},
         )
         media_data = data.json()["data"]["Page"]["media"]
+        print(f"page {page}, year {year}")
         return [RawAnilistData(**r) for r in media_data]
 
     async def _request(self, query: str, variables: dict[str, int]) -> httpx.Response:
@@ -25,7 +28,8 @@ class AnilistExtractor:
             response = await client.post(
                 self.BASE_URL,
                 json={"query": query, "variables": variables},
-                timeout=3.0,
+                timeout=GLOBAL_TIMEOUT,
             )
         response.raise_for_status()
+        await asyncio.sleep(GLOBAL_RATE_LIMIT)
         return response
