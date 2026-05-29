@@ -28,7 +28,7 @@ class RawAnilistData(BaseModel):
     idMal: int | None
     title: AnilistTitle
     type: str
-    format: str
+    format: str | None
     description: str | None
     startDate: AnilistDate
     endDate: AnilistDate

@@ -10,7 +10,7 @@ class AnimeDataModel:
     native_title: str | None
     preferred_title: str
     type: str
-    format: str
+    format: str | None
     description: str | None
     start_date: str | None
     end_date: str | None
