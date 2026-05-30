@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+from httpx import AsyncClient
 from src.core.extractors.extract_anilist import AnilistExtractor
 from src.core.transformers.transform_anilist import AnilistTransformer
 from src.core.loaders.sqlite_loader import LoadToSQLite
@@ -9,7 +10,7 @@ from src.core.loaders.sqlite_loader import LoadToSQLite
 def setup_logging() -> None:
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+        format="%(asctime)s | %(levelname)-8s | %(name)-40s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
     logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -28,11 +29,12 @@ def build_parser() -> argparse.ArgumentParser:
 async def parser_args(parser: argparse.ArgumentParser) -> None:
     args = parser.parse_args()
 
-    extractor = AnilistExtractor()
-    transformer = AnilistTransformer(extractor)
-    loader = LoadToSQLite(transformer)
+    async with AsyncClient() as client:
+        extractor = AnilistExtractor(client)
+        transformer = AnilistTransformer(extractor)
+        loader = LoadToSQLite(transformer)
 
-    await loader.load_data(args.start, args.end)
+        await loader.load_data(args.start, args.end)
 
 
 # package script bootstrap

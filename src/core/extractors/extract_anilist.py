@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 class AnilistExtractor:
     BASE_URL = "https://graphql.anilist.co"
 
+    def __init__(self, client: httpx.AsyncClient) -> None:
+        self.client = client
+
     async def get_by_page(self, page: int, year: int) -> list[RawAnilistData]:
         if len(str(year)) != 4:
             raise InvalidYearError(year)
@@ -27,12 +30,11 @@ class AnilistExtractor:
         return [RawAnilistData(**r) for r in media_data]
 
     async def _request(self, query: str, variables: dict[str, int]) -> httpx.Response:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                self.BASE_URL,
-                json={"query": query, "variables": variables},
-                timeout=GLOBAL_TIMEOUT,
-            )
+        response = await self.client.post(
+            self.BASE_URL,
+            json={"query": query, "variables": variables},
+            timeout=GLOBAL_TIMEOUT,
+        )
         response.raise_for_status()
         await asyncio.sleep(GLOBAL_RATE_LIMIT)
         return response
