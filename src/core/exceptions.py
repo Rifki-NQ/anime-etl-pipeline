@@ -23,3 +23,11 @@ class InvalidYearError(ExtractorError):
         super().__init__(
             f"Error: invalid year length for ({year}), expected len: 4, got: {len(str(year))}"
         )
+
+
+class MaxRetryAttemptError(ExtractorError):
+    """Raised when the maximum retry attempt has reached"""
+
+    def __init__(self, max_attempt: int) -> None:
+        self.max_attempt = max_attempt
+        super().__init__(f"Error: max retry attempt reached: {max_attempt}")
