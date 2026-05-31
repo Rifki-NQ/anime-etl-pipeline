@@ -1,5 +1,6 @@
 import sqlite3
 import logging
+from pathlib import Path
 from configs import SQL_BATCH_COMMIT
 from dataclasses import fields, asdict
 from src.core.models.domain_model import AnimeDataModel
@@ -13,11 +14,13 @@ class LoadToSQLite:
     COLUMNS = ", ".join(MODEL_FIELDS)
     PLACEHOLDER = ", ".join("?" * len(MODEL_FIELDS))
 
-    def __init__(self, transformer: TransformerProtocol) -> None:
+    def __init__(self, transformer: TransformerProtocol, filepath: Path) -> None:
         self.transformer = transformer
+        self.filepath = filepath
+        self._ensure_path_exists()
 
     async def load_data(self, start_year: int, end_year: int) -> None:
-        with sqlite3.connect("database/data.db") as conn:
+        with sqlite3.connect(self.filepath) as conn:
             cur = conn.cursor()
             self._ensure_table_exists(cur)
             current_entry = 0
@@ -78,3 +81,10 @@ class LoadToSQLite:
 
     def _unpack_data(self, data: AnimeDataModel) -> tuple[str | int | None, ...]:
         return tuple(asdict(data).values())
+
+    def _ensure_path_exists(self) -> None:
+        if not self.filepath.exists():
+            logger.info(f"Loader: {self.filepath} has not existed yet")
+            self.filepath.parent.mkdir(parents=True, exist_ok=True)
+            self.filepath.touch()
+            logger.info(f"Loader: {self.filepath} created")
