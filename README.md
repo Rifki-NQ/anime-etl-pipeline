@@ -65,6 +65,7 @@ anime [options]
 ### Command Options
 
 ```bash
+--v        # type: flag, verbose logs for debugging
 --start    # type: int, start year of the data to fetch
 --end      # type: int, end year of the data to fetch
 --path     # type: str, local database filepath destination

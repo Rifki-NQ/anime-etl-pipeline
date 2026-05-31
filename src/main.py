@@ -2,16 +2,16 @@ import argparse
 import asyncio
 import logging
 from httpx import AsyncClient
-from configs import DEFAULT_DB_PATH
+from configs import DEFAULT_DB_PATH, DEFAULT_LOGGING_LEVEL
 from src.core.utils import valid_filepath, validate_years_args
 from src.core.extractors.extract_anilist import AnilistExtractor
 from src.core.transformers.transform_anilist import AnilistTransformer
 from src.core.loaders.sqlite_loader import LoadToSQLite
 
 
-def setup_logging() -> None:
+def setup_logging(logging_level: int) -> None:
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging_level,
         format="%(asctime)s | %(levelname)-8s | %(name)-40s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
@@ -22,6 +22,7 @@ def setup_logging() -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="anime")
+    parser.add_argument("--v", action="store_const", const=10, default=DEFAULT_LOGGING_LEVEL)
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--end", type=int, required=True)
     parser.add_argument("--sync", action="store_true", default=False)
@@ -34,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 async def parser_args(parser: argparse.ArgumentParser) -> None:
     args = parser.parse_args()
+    setup_logging(args.v)
     validate_years_args(parser, args)
 
     async with AsyncClient() as client:
@@ -47,7 +49,6 @@ async def parser_args(parser: argparse.ArgumentParser) -> None:
 # package script bootstrap
 def main() -> None:
     logger = logging.getLogger(__name__)
-    setup_logging()
 
     logger.info("App started")
     asyncio.run(parser_args(build_parser()))
