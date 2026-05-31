@@ -24,6 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="anime")
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--end", type=int, required=True)
+    parser.add_argument("--sync", action="store_true", default=False)
     parser.add_argument(
         "--path", type=valid_filepath, default=DEFAULT_DB_PATH, required=False
     )
@@ -40,7 +41,7 @@ async def parser_args(parser: argparse.ArgumentParser) -> None:
         transformer = AnilistTransformer(extractor)
         loader = LoadToSQLite(transformer, args.path)
 
-        await loader.load_data(args.start, args.end)
+        await loader.load_data(args.start, args.end, args.sync)
 
 
 # package script bootstrap
