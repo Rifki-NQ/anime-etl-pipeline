@@ -38,6 +38,9 @@ class LoadToSQLite:
                     logger.info(f"Loaded: batch commit {batch_commit_num}")
                     current_entry = 0
                     batch_commit_num += 1
+            if current_entry > 0:
+                logger.info("Loader: final commit")
+                conn.commit()
 
     def _id_exist_in_database(self, cursor: sqlite3.Cursor, id: int) -> bool:
         cursor.execute("select id from anime where id = ?", (id,))
