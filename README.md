@@ -65,11 +65,11 @@ anime [options]
 ### Command Options
 
 ```bash
---v        # type: flag, verbose logs for debugging
---start    # type: int, start year of the data to fetch
---end      # type: int, end year of the data to fetch
---path     # type: str, local database filepath destination
---sync     # type: flag, update existing data on database instead of skipping it
+--v                 # type: flag, verbose logs for debugging
+--start             # type: int, start year of the data to fetch
+--end               # type: int, end year of the data to fetch
+--path              # type: str, local database filepath destination
+--skip-existing     # type: flag, skip existing id on database
 ```
 
 ### Example

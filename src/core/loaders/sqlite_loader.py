@@ -19,7 +19,7 @@ class LoadToSQLite:
         self.filepath = filepath
         self._ensure_path_exists()
 
-    async def load_data(self, start_year: int, end_year: int, sync: bool) -> None:
+    async def load_data(self, start_year: int, end_year: int, skip_exist: bool) -> None:
         with sqlite3.connect(self.filepath) as conn:
             cur = conn.cursor()
             self._ensure_table_exists(cur)
@@ -28,7 +28,7 @@ class LoadToSQLite:
             async for data in self.transformer.get_transformed_data(
                 start_year, end_year
             ):
-                if not sync and self._id_exist_in_database(cur, data.id):
+                if skip_exist and self._id_exist_in_database(cur, data.id):
                     logger.info(
                         f"Loader: skipping id {data.id} because it already exists"
                     )
