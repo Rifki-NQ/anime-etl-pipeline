@@ -29,7 +29,9 @@ class LoadToSQLite:
                 start_year, end_year
             ):
                 if not sync and self._id_exist_in_database(cur, data.id):
-                    logger.info(f"Loader: skipping id {data.id} because it already exists")
+                    logger.info(
+                        f"Loader: skipping id {data.id} because it already exists"
+                    )
                     continue
                 self._insert_data(cur, data)
                 current_entry += 1

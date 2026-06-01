@@ -21,7 +21,7 @@ class AnilistExtractor:
     def __init__(self, client: httpx.AsyncClient) -> None:
         self.client = client
 
-    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData]:
+    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData] | None:
         if len(str(year)) != 4:
             raise InvalidYearError(year)
         data = await self._request_with_retry(
@@ -32,6 +32,8 @@ class AnilistExtractor:
             retry_delay=self.RETRY_DELAY,
         )
         media_data = data.json()["data"]["Page"]["media"]
+        if not media_data:
+            return None
         logger.info(f"Extracted: page {page}, year {year}")
         return [RawAnilistData(**r) for r in media_data]
 

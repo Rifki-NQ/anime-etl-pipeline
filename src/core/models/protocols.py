@@ -5,7 +5,9 @@ from src.core.models.domain_model import AnimeDataModel
 
 
 class ExtractorProtocol(Protocol):
-    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData]: ...
+    async def get_by_page(
+        self, page: int, year: int
+    ) -> list[RawAnilistData] | None: ...
 
 
 class TransformerProtocol(Protocol):

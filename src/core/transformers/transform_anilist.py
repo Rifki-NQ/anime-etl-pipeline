@@ -26,11 +26,11 @@ class AnilistTransformer:
                 1, 100
             ):  # hardcoded max page, since anilist pagination caps at 100
                 pages = await self.extractor.get_by_page(i, year)
-                if not pages:
+                if pages is None:
                     break
+                logger.info(f"Transforming: page {i}, year {year}")
                 for page in pages:
                     yield page
-            logger.info(f"Transformed: year {year}")
 
     def _transform_data(self, raw_data: RawAnilistData) -> AnimeDataModel:
         return AnimeDataModel(
