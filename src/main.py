@@ -8,6 +8,8 @@ from src.core.extractors.extract_anilist import AnilistExtractor
 from src.core.transformers.transform_anilist import AnilistTransformer
 from src.core.loaders.sqlite_loader import LoadToSQLite
 
+logger = logging.getLogger(__name__)
+
 
 def setup_logging(logging_level: int) -> None:
     logging.basicConfig(
@@ -22,7 +24,9 @@ def setup_logging(logging_level: int) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="anime")
-    parser.add_argument("--v", action="store_const", const=10, default=DEFAULT_LOGGING_LEVEL)
+    parser.add_argument(
+        "--v", action="store_const", const=10, default=DEFAULT_LOGGING_LEVEL
+    )
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--end", type=int, required=True)
     parser.add_argument("--sync", action="store_true", default=False)
@@ -33,23 +37,22 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-async def parser_args(parser: argparse.ArgumentParser) -> None:
+async def parse_args(parser: argparse.ArgumentParser) -> None:
+
     args = parser.parse_args()
     setup_logging(args.v)
     validate_years_args(parser, args)
 
+    logger.info("App started")
     async with AsyncClient() as client:
         extractor = AnilistExtractor(client)
         transformer = AnilistTransformer(extractor)
         loader = LoadToSQLite(transformer, args.path)
 
         await loader.load_data(args.start, args.end, args.sync)
+    logger.info("App finished")
 
 
 # package script bootstrap
 def main() -> None:
-    logger = logging.getLogger(__name__)
-
-    logger.info("App started")
-    asyncio.run(parser_args(build_parser()))
-    logger.info("App finished")
+    asyncio.run(parse_args(build_parser()))
