@@ -39,6 +39,7 @@ def test_transformed_first_data_value(all_data: list[AnimeDataModel]) -> None:
     assert data.preferred_title == "Cencoroll 2"
     assert data.type == "ANIME"
     assert data.format == "MOVIE"
+    assert data.status == "FINISHED"
     assert data.description == "The second instance of the Cencoroll film series. "
     assert data.start_date == "2019-06-29"
     assert data.end_date == "2019-06-29"

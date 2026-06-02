@@ -29,6 +29,7 @@ class RawAnilistData(BaseModel):
     title: AnilistTitle
     type: str
     format: str | None
+    status: str
     description: str | None
     startDate: AnilistDate
     endDate: AnilistDate

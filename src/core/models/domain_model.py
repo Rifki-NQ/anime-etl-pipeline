@@ -11,6 +11,7 @@ class AnimeDataModel:
     preferred_title: str
     type: str
     format: str | None
+    status: str
     description: str | None
     start_date: str | None
     end_date: str | None

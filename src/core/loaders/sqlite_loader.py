@@ -71,6 +71,7 @@ class LoadToSQLite:
                            preferred_title TEXT,
                            type TEXT,
                            format TEXT,
+                           status TEXT,
                            description TEXT,
                            start_date TEXT,
                            end_date TEXT,

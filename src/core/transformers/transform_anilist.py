@@ -42,6 +42,7 @@ class AnilistTransformer:
             preferred_title=raw_data.title.userPreferred,
             type=raw_data.type,
             format=raw_data.format,
+            status=raw_data.status,
             description=raw_data.description,
             start_date=self._transform_date(**raw_data.startDate.model_dump()),
             end_date=self._transform_date(**raw_data.endDate.model_dump()),
