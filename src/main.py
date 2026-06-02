@@ -16,6 +16,7 @@ def setup_logging(logging_level: int) -> None:
         level=logging_level,
         format="%(asctime)s | %(levelname)-8s | %(name)-40s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
+        handlers=[logging.FileHandler("logs.log", "w"), logging.StreamHandler()],
     )
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
