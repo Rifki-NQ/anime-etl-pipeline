@@ -19,7 +19,7 @@ class LoadToSQLite:
         self.filepath = filepath
         self._ensure_path_exists()
 
-    async def load_data(self, start_year: int, end_year: int, skip_exist: bool) -> None:
+    async def load_data(self, start_year: int, end_year: int, skip_exists: bool) -> None:
         with sqlite3.connect(self.filepath) as conn:
             cur = conn.cursor()
             self._ensure_table_exists(cur)
@@ -28,12 +28,10 @@ class LoadToSQLite:
             async for data in self.transformer.get_transformed_data(
                 start_year, end_year
             ):
-                if skip_exist and self._id_exist_in_database(cur, data.id):
-                    logger.info(
-                        f"Loader: skipping id {data.id} because it already exists"
-                    )
-                    continue
-                self._insert_data(cur, data)
+                if skip_exists:
+                    self._insert_data_or_ignore(cur, data)
+                else:
+                    self._insert_data_or_replace(cur, data)
                 current_entry += 1
                 if current_entry == SQL_BATCH_COMMIT:
                     conn.commit()
@@ -43,15 +41,9 @@ class LoadToSQLite:
             if current_entry > 0:
                 logger.info("Loader: final commit")
                 conn.commit()
+        conn.close()
 
-    def _id_exist_in_database(self, cursor: sqlite3.Cursor, id: int) -> bool:
-        cursor.execute("select id from anime where id = ?", (id,))
-        if cursor.fetchone() is None:
-            return False
-        return True
-
-    def _insert_data(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
-        logger.debug(f"Loading: id {data.id}")
+    def _insert_data_or_replace(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
         cursor.execute(
             f"""
             INSERT OR REPLACE INTO anime ({self.COLUMNS})
@@ -59,6 +51,20 @@ class LoadToSQLite:
             """,
             self._unpack_data(data),
         )
+        logger.debug(f"Loaded: id {data.id}")
+        
+    def _insert_data_or_ignore(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
+        cursor.execute(
+            f"""
+            INSERT OR IGNORE INTO anime ({self.COLUMNS})
+            VALUES ({self.PLACEHOLDER})
+            """,
+            self._unpack_data(data)
+        )
+        if cursor.rowcount == 0:
+            logger.debug(f"Loader: skipping id {data.id}")
+        else:
+            logger.debug(f"Loaded: id {data.id}")
 
     def _ensure_table_exists(self, cursor: sqlite3.Cursor) -> None:
         cursor.execute("""
