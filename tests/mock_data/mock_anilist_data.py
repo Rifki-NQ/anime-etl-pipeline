@@ -1,5 +1,84 @@
 from typing import Any
 
+MOCKED_ANILIST_PAGE_1_UPDATED: list[dict[str, Any]] = [
+    {
+        "averageScore": 70,
+        "countryOfOrigin": "JP",
+        "description": "The second instance of the Cencoroll film series. Mock updated for test purpose",
+        "duration": 48,
+        "endDate": {"day": 29, "month": 6, "year": 2019},
+        "episodes": 1,
+        "favourites": 137,
+        "format": "MOVIE",
+        "genres": ["Action", "Sci-Fi"],
+        "hashtag": None,
+        "id": 9488,
+        "idMal": 9488,
+        "meanScore": 70,
+        "popularity": 13113,
+        "season": "SPRING",
+        "seasonYear": 2019,
+        "source": "ORIGINAL",
+        "startDate": {"day": 29, "month": 6, "year": 2019},
+        "status": "FINISHED",
+        "studios": {
+            "nodes": [
+                {"isAnimationStudio": False, "name": "Aniplex"},
+                {"isAnimationStudio": False, "name": "Think Corporation"},
+            ]
+        },
+        "synonyms": ["Cencoroll Connect"],
+        "title": {
+            "english": None,
+            "native": "センコロール2",
+            "romaji": "Cencoroll 2 mock updated",
+            "userPreferred": "Cencoroll 2",
+        },
+        "trending": 0,
+        "type": "ANIME",
+        "updatedAt": 1779843743,
+    },
+    {
+        "averageScore": 66,
+        "countryOfOrigin": "JP",
+        "description": "Mysteria Academy is a prestigious magic school that teaches "
+        "without discrimination to the three factions (humans, gods "
+        "and demons) who otherwise are usually at battle with each "
+        "other. This anime follows the daily lives of two young women "
+        "at the academy, Anne, the princess of Mysteria, and the "
+        "dragon princess Grea. <br>\n"
+        "<br>\n"
+        "(Source: Anime News Network)",
+        "duration": 14,
+        "endDate": {"day": 25, "month": 3, "year": 2019},
+        "episodes": 10,
+        "favourites": 546,
+        "format": "TV_SHORT",
+        "genres": ["Fantasy", "Romance", "Slice of Life"],
+        "hashtag": "#マナリア",
+        "id": 21322,
+        "idMal": 31537,
+        "meanScore": 66,
+        "popularity": 38341,
+        "season": "WINTER",
+        "seasonYear": 2019,
+        "source": "VIDEO_GAME",
+        "startDate": {"day": 21, "month": 1, "year": 2019},
+        "status": "FINISHED",
+        "studios": {"nodes": [{"isAnimationStudio": True, "name": "CygamesPictures"}]},
+        "synonyms": ["Shingeki no Bahamut: Manaria Friends"],
+        "title": {
+            "english": "Mysteria Friends",
+            "native": "マナリアフレンズ",
+            "romaji": "Manaria Friends",
+            "userPreferred": "Manaria Friends",
+        },
+        "trending": 0,
+        "type": "ANIME",
+        "updatedAt": 1779893269,
+    },
+]
+
 MOCKED_ANILIST_DATA_PAGE_1: list[dict[str, Any]] = [
     {
         "averageScore": 70,

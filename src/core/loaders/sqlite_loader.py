@@ -19,7 +19,9 @@ class LoadToSQLite:
         self.filepath = filepath
         self._ensure_path_exists()
 
-    async def load_data(self, start_year: int, end_year: int, skip_exists: bool) -> None:
+    async def load_data(
+        self, start_year: int, end_year: int, skip_exists: bool
+    ) -> None:
         with sqlite3.connect(self.filepath) as conn:
             cur = conn.cursor()
             self._ensure_table_exists(cur)
@@ -43,7 +45,9 @@ class LoadToSQLite:
                 conn.commit()
         conn.close()
 
-    def _insert_data_or_replace(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
+    def _insert_data_or_replace(
+        self, cursor: sqlite3.Cursor, data: AnimeDataModel
+    ) -> None:
         cursor.execute(
             f"""
             INSERT OR REPLACE INTO anime ({self.COLUMNS})
@@ -52,14 +56,16 @@ class LoadToSQLite:
             self._unpack_data(data),
         )
         logger.debug(f"Loaded: id {data.id}")
-        
-    def _insert_data_or_ignore(self, cursor: sqlite3.Cursor, data: AnimeDataModel) -> None:
+
+    def _insert_data_or_ignore(
+        self, cursor: sqlite3.Cursor, data: AnimeDataModel
+    ) -> None:
         cursor.execute(
             f"""
             INSERT OR IGNORE INTO anime ({self.COLUMNS})
             VALUES ({self.PLACEHOLDER})
             """,
-            self._unpack_data(data)
+            self._unpack_data(data),
         )
         if cursor.rowcount == 0:
             logger.debug(f"Loader: skipping id {data.id}")
