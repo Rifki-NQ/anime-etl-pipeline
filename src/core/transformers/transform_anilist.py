@@ -15,7 +15,7 @@ class AnilistTransformer:
     async def get_transformed_data(
         self, start_year: int, end_year: int
     ) -> AsyncIterable[AnimeDataModel]:
-        years = self._get_year_range(start_year, end_year)
+        years = list(range(start_year, end_year + 1))
         async for raw_data in self._get_raw_data(years):
             logger.debug(f"Transforming: id {raw_data.id}")
             yield self._transform_data(raw_data)
@@ -92,10 +92,3 @@ class AnilistTransformer:
             if node.isAnimationStudio:
                 return node.name
         return None
-
-    def _get_year_range(self, start: int, end: int) -> list[int]:
-        years: list[int] = []
-        while start <= end:
-            years.append(start)
-            start += 1
-        return years
