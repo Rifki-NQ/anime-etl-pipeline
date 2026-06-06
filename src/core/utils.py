@@ -17,4 +17,4 @@ def validate_years_args(
     parser: argparse.ArgumentParser, args: argparse.Namespace
 ) -> None:
     if args.start > args.end:
-        parser.error("--start year cannot be less than --end year")
+        parser.error("--end year cannot be less than --start year")

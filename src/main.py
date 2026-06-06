@@ -26,13 +26,13 @@ def setup_logging(logging_level: int) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="anime")
     parser.add_argument(
-        "--v", action="store_const", const=10, default=DEFAULT_LOGGING_LEVEL
+        "-v", action="store_const", const=10, default=DEFAULT_LOGGING_LEVEL, help="verbose logs"
     )
-    parser.add_argument("--start", type=int, required=True)
-    parser.add_argument("--end", type=int, required=True)
-    parser.add_argument("--skip-existing", action="store_true", default=False)
+    parser.add_argument("--start", type=int, required=True, help="start year")
+    parser.add_argument("--end", type=int, required=True, help="end year")
+    parser.add_argument("--skip-existing", action="store_true", default=False, help="skip existing id on db")
     parser.add_argument(
-        "--path", type=valid_filepath, default=DEFAULT_DB_PATH, required=False
+        "--path", type=valid_filepath, default=DEFAULT_DB_PATH, required=False, help="db file destination"
     )
 
     return parser
