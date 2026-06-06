@@ -8,7 +8,7 @@ from tests.mock_data.mock_anilist_data import (
 
 
 class MockAnilistExtractorNormal:
-    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData]:
+    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData] | None:
         mocked_data: list[dict[str, Any]] = []
         match page:
             case 1:
@@ -16,12 +16,12 @@ class MockAnilistExtractorNormal:
             case 2:
                 mocked_data = MOCKED_ANILIST_DATA_PAGE_2
             case _:
-                pass
+                return None
         return [RawAnilistData(**r) for r in mocked_data]
 
 
 class MockAnilistExtractorUpdated:
-    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData]:
+    async def get_by_page(self, page: int, year: int) -> list[RawAnilistData] | None:
         mocked_data: list[dict[str, Any]] = []
         match page:
             case 1:
@@ -29,5 +29,5 @@ class MockAnilistExtractorUpdated:
             case 2:
                 mocked_data = MOCKED_ANILIST_DATA_PAGE_2
             case _:
-                pass
+                return None
         return [RawAnilistData(**r) for r in mocked_data]
