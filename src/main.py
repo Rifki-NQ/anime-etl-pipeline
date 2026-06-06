@@ -1,3 +1,4 @@
+import sys
 import argparse
 import asyncio
 import logging
@@ -7,6 +8,7 @@ from src.core.utils import valid_filepath, validate_years_args
 from src.core.extractors.extract_anilist import AnilistExtractor
 from src.core.transformers.transform_anilist import AnilistTransformer
 from src.core.loaders.sqlite_loader import LoadToSQLite
+from src.core.exceptions import DomainError
 
 logger = logging.getLogger(__name__)
 
@@ -51,9 +53,17 @@ async def parse_args(parser: argparse.ArgumentParser) -> None:
         loader = LoadToSQLite(transformer, args.path)
 
         await loader.load_data(args.start, args.end, args.skip_existing)
-    logger.info("App finished")
+    logger.info("App finished successfully")
 
 
 # package script bootstrap
 def main() -> None:
-    asyncio.run(parse_args(build_parser()))
+    try:
+        asyncio.run(parse_args(build_parser()))
+    except DomainError as e:
+        logger.critical(e)
+        logger.info("App finished with error")
+        sys.exit(1)
+        
+if __name__ == "__main__":
+    main()
